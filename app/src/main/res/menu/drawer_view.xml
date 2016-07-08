@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/view_type"
+            android:icon="@drawable/ic_dashboard"
+            android:title="@string/menu_item_name_type" />
+        <item
+            android:id="@+id/view_time"
+            android:icon="@drawable/ic_event"
+            android:title="@string/menu_item_name_time" />
+        <item
+            android:id="@+id/view_forum"
+            android:icon="@drawable/ic_forum"
+            android:title="@string/menu_item_name_forum" />
+    </group>
+
+    <item android:title="@string/menu_item_other">
+        <menu>
+            <item
+                android:id="@+id/view_source"
+                android:icon="@drawable/github_logo"
+                android:title="@string/menu_item_name_source" />
+            <item
+                android:id="@+id/view_about"
+                android:icon="@drawable/ic_forum"
+                android:title="@string/menu_item_name_about" />
+        </menu>
+    </item>
+</menu>

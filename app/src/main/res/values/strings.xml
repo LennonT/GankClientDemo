@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">GankClientDemo</string>
+    <string name="menu_item_name_type">分类浏览</string>
+    <string name="menu_item_name_time">时间浏览</string>
+    <string name="menu_item_name_forum">我的收藏</string>
+    <string name="menu_item_name_source">应用代码</string>
+    <string name="menu_item_name_about">关于作者</string>
+    <string name="menu_item_other">其他</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
