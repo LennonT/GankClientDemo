@@ -11,13 +11,11 @@ import android.view.ViewGroup;
 
 import com.example.lennont.gankclientdemo.R;
 import com.example.lennont.gankclientdemo.adapter.BenefitAdapter;
-import com.example.lennont.gankclientdemo.bean.Goods;
 import com.example.lennont.gankclientdemo.bean.GoodsResult;
 import com.example.lennont.gankclientdemo.bean.Image;
 import com.example.lennont.gankclientdemo.network.GankCloudApi;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import butterknife.Bind;
@@ -82,7 +80,7 @@ public class BenefitFragment extends BaseLoadingFragment implements SwipeRefresh
         mBenefitAdapter = new BenefitAdapter(getActivity()) {
             @Override
             protected void onItemClick(View v, int adapterPosition) {
-
+                //TODO 进入大图的单图查看模式
             }
         };
         mBenefitImages = new ArrayList<>();
@@ -194,7 +192,7 @@ public class BenefitFragment extends BaseLoadingFragment implements SwipeRefresh
 
     private void loadData(int startPage){
         GankCloudApi.getInstance()
-                .GetGankImages(GankCloudApi.LOAD_LIMIT, startPage)
+                .getGankImages(GankCloudApi.LOAD_LIMIT, startPage)
                 .cache()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

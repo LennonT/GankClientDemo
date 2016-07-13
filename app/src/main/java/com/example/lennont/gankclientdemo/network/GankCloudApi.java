@@ -26,9 +26,20 @@ import rx.Observable;
  */
 public class GankCloudApi {
 
+    //region Field
+
+    private final String Base_Url = "https://gank.io/api/";
+
     private CloudService service;
 
     public static GankCloudApi instance;
+
+    /**每次加载条目*/
+    public static final int LOAD_LIMIT = 20;
+
+    //endregion
+
+    //region ctor
 
     public static GankCloudApi getInstance() {
         if (null == instance) synchronized (GankCloudApi.class) {
@@ -39,10 +50,6 @@ public class GankCloudApi {
         return instance;
     }
 
-    /**每次加载条目*/
-    public static final int LOAD_LIMIT = 20;
-
-
     public GankCloudApi() {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder();
@@ -51,7 +58,7 @@ public class GankCloudApi {
         client.addInterceptor(interceptor);
 
         Retrofit retrofit = new  Retrofit.Builder()
-                .baseUrl("https://gank.io/api/")
+                .baseUrl(Base_Url)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client.build())
@@ -60,20 +67,49 @@ public class GankCloudApi {
         service = retrofit.create(CloudService.class);
     }
 
-    //获取福利照片
-    public Observable<GoodsResult> GetGankImages(int limit, int page){
+    //endregion
+
+    //region Public
+
+    //获取福利照片信息
+    public Observable<GoodsResult> getGankImages(int limit, int page) {
         return service.GetGankImage(limit, page);
     }
 
+    //获取Android项目信息列表
+    public Observable<GoodsResult> getAndroidGoods(int limit, int page) {
+        return service.getAndroidGoods(limit, page);
+    }
 
-    public interface CloudService {
+    //获取iOS项目信息列表
+    public Observable<GoodsResult> getIOSGoods(int limit, int page) {
+        return service.getIosGoods(limit, page);
+    }
+
+    //endregion
+
+    //region InnerClass
+
+    private interface CloudService {
 
         @GET("data/福利/{limit}/{page}")
         Observable<GoodsResult> GetGankImage(
                 @Path("limit") int limit,
                 @Path("page") int page);
+
+        @GET("/data/Android/{limit}/{page}")
+        Observable<GoodsResult> getAndroidGoods(
+                @Path("limit") int limit,
+                @Path("page") int page
+        );
+
+        @GET("/data/iOS/{limit}/{page}")
+        Observable<GoodsResult> getIosGoods(
+                @Path("limit") int limit,
+                @Path("page") int page
+        );
     }
 
-
+    //endregion
 
 }

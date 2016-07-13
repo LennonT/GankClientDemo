@@ -1,5 +1,6 @@
 package com.example.lennont.gankclientdemo.main;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -20,22 +21,17 @@ import com.example.lennont.gankclientdemo.bean.GoodsResult;
 import com.example.lennont.gankclientdemo.bean.Image;
 import com.example.lennont.gankclientdemo.network.GankCloudApi;
 
-import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-    //region 属性
+    //region Field
 
     @Bind(R.id.main_toolbar)   //顶部工具栏
             Toolbar mainToolbar;
@@ -54,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private Realm mRealm;
 
     //endregion
+
+    //region Override
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +72,58 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
 
         loadAllImages();
+
+
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mRealm.close();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        try {
+            Class c = Class.forName("");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //endregion
+
+    //region Private
 
     private void loadAllImages() {
         RealmResults<Image> allImage = mRealm.where(Image.class).findAll();   //获取当前已缓存的Image
         if (allImage.size() == 0) {
 
             GankCloudApi.getInstance()
-                    .GetGankImages(GankCloudApi.LOAD_LIMIT, 1)
+                    .getGankImages(GankCloudApi.LOAD_LIMIT, 1)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<GoodsResult>() {
@@ -117,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 //            ImageGoodsCache.getInstance().addAllImageGoods(allImage);
         }
 
+
     }
 
     private void setPagerContent() {
@@ -128,20 +171,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(mAdapter);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        mRealm.close();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    //endregion
 
 }
