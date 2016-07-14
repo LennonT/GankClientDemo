@@ -8,6 +8,7 @@ import com.example.lennont.gankclientdemo.bean.Image;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -56,6 +57,7 @@ public class GankCloudApi {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         client.addInterceptor(interceptor);
+        client.readTimeout(3000L, TimeUnit.MILLISECONDS);
 
         Retrofit retrofit = new  Retrofit.Builder()
                 .baseUrl(Base_Url)
@@ -97,13 +99,13 @@ public class GankCloudApi {
                 @Path("limit") int limit,
                 @Path("page") int page);
 
-        @GET("/data/Android/{limit}/{page}")
+        @GET("data/Android/{limit}/{page}")
         Observable<GoodsResult> getAndroidGoods(
                 @Path("limit") int limit,
                 @Path("page") int page
         );
 
-        @GET("/data/iOS/{limit}/{page}")
+        @GET("data/iOS/{limit}/{page}")
         Observable<GoodsResult> getIosGoods(
                 @Path("limit") int limit,
                 @Path("page") int page

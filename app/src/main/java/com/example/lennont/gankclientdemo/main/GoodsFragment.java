@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.lennont.gankclientdemo.R;
 import com.example.lennont.gankclientdemo.adapter.GoodsAdapter;
+import com.example.lennont.gankclientdemo.bean.Goods;
 import com.example.lennont.gankclientdemo.bean.GoodsResult;
 import com.example.lennont.gankclientdemo.bean.Image;
 import com.example.lennont.gankclientdemo.network.GankCloudApi;
