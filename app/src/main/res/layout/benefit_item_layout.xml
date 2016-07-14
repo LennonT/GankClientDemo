@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <com.example.lennont.gankclientdemo.view.RadioImageView
-        android:id="@+id/image"
+        android:id="@+id/image_gank"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"

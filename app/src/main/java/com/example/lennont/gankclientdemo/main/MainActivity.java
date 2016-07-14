@@ -19,6 +19,7 @@ import com.example.lennont.gankclientdemo.adapter.ContentPageAdapter;
 import com.example.lennont.gankclientdemo.bean.Goods;
 import com.example.lennont.gankclientdemo.bean.GoodsResult;
 import com.example.lennont.gankclientdemo.bean.Image;
+import com.example.lennont.gankclientdemo.data.ImageGoodsCache;
 import com.example.lennont.gankclientdemo.network.GankCloudApi;
 
 import butterknife.Bind;
@@ -73,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
         loadAllImages();
 
-
     }
 
     @Override
@@ -103,15 +103,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        try {
-            Class c = Class.forName("");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
+    protected void onResume() {
+        super.onResume();
     }
 
     //endregion
@@ -124,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
             GankCloudApi.getInstance()
                     .getGankImages(GankCloudApi.LOAD_LIMIT, 1)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<GoodsResult>() {
                         @Override
@@ -156,9 +149,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         } else {
-//            ImageGoodsCache.getInstance().addAllImageGoods(allImage);
+            ImageGoodsCache.getInstance().replaceAllGoods(allImage);
         }
-
 
     }
 

@@ -1,6 +1,8 @@
 package com.example.lennont.gankclientdemo.bean;
 
+import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -24,7 +26,7 @@ public class Image extends RealmObject {
     private boolean used;
 
     private String createdAt;
-    private String _ns;
+    private String source;
 
     public int getWidth() {
         return width;
@@ -114,14 +116,26 @@ public class Image extends RealmObject {
         this.createdAt = createdAt;
     }
 
-    public String get_ns() {
-        return _ns;
+    public String getSource() {
+        return source;
     }
 
-    public void set_ns(String _ns) {
-        this._ns = _ns;
+    public void setSource(String source) {
+        this.source = source;
     }
 
+
+    public static Image queryFirstZeroImg(Realm realm){
+        RealmResults<Image> results =  realm.where(Image.class).equalTo("width",0)
+                .findAllSorted("position");
+        if(results.size() > 0){
+            Image image = results.get(0);
+            return image;
+        }
+        return null;
+    }
+
+    //Goods是Json格式的网络数据 Image是Realm需要的Table数据 此处做一下转换
     public static void updateValue(Image image, Goods goods) {
         image.set_id(goods.get_id());
         image.setWho(goods.getWho());
@@ -131,6 +145,6 @@ public class Image extends RealmObject {
         image.setUrl(goods.getUrl());
         image.setUsed(goods.isUsed());
         image.setCreatedAt(goods.getCreatedAt());
-        image.set_ns(goods.getSource());
+        image.setSource(goods.getSource());
     }
 }

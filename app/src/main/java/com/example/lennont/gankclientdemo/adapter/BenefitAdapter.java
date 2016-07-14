@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Gallery;
 
 import com.bumptech.glide.Glide;
 import com.example.lennont.gankclientdemo.R;
@@ -20,7 +21,7 @@ import butterknife.ButterKnife;
 /**
  * Created by LennonT on 2016/7/7.
  */
-public abstract class BenefitAdapter extends ArrayRecyleAdapter<Image, BenefitAdapter.ViewHolder> {
+public abstract class BenefitAdapter extends ArrayRecyclerAdapter<Image, BenefitAdapter.ViewHolder> {
 
     private final Context context;
     private final LayoutInflater inflater;
@@ -44,17 +45,14 @@ public abstract class BenefitAdapter extends ArrayRecyleAdapter<Image, BenefitAd
         ViewCompat.setTransitionName(holder.imageView, image.getUrl());
     }
 
-    @Override
-    public int getItemCount() {
-        return 0;
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        @Bind(R.id.image_gank)
         public RadioImageView imageView;   //定宽不定高的ImageView
 
         public ViewHolder(@LayoutRes int resource, ViewGroup parent) {
             super(inflater.inflate(resource, parent, false));
+            ButterKnife.bind(this, itemView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -64,8 +62,10 @@ public abstract class BenefitAdapter extends ArrayRecyleAdapter<Image, BenefitAd
             });
         }
 
+
     }
 
+    //某项被点击时的处理
     protected abstract void onItemClick(View v, int adapterPosition);
 
     private void loadGoodsImage(ViewHolder holder, Image imgGoods) {

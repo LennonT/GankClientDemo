@@ -1,5 +1,8 @@
 package com.example.lennont.gankclientdemo.main;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,6 +17,7 @@ import com.example.lennont.gankclientdemo.adapter.BenefitAdapter;
 import com.example.lennont.gankclientdemo.bean.GoodsResult;
 import com.example.lennont.gankclientdemo.bean.Image;
 import com.example.lennont.gankclientdemo.network.GankCloudApi;
+import com.example.lennont.gankclientdemo.service.ImageImproveService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,8 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.plugins.RxJavaErrorHandler;
+import rx.plugins.RxJavaPlugins;
 import rx.schedulers.Schedulers;
 
 public class BenefitFragment extends BaseLoadingFragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -50,6 +56,15 @@ public class BenefitFragment extends BaseLoadingFragment implements SwipeRefresh
     private List<Image> mAllBenefitImage = new ArrayList<>();
 
     //endregion
+
+    static {
+        RxJavaPlugins.getInstance().registerErrorHandler(new RxJavaErrorHandler() {
+            @Override
+            public void handleError(Throwable e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     public BenefitFragment() {
     }
@@ -163,7 +178,7 @@ public class BenefitFragment extends BaseLoadingFragment implements SwipeRefresh
     private void refreshBenefitGoods() {
 
         mAllBenefitImage.clear();
-        RealmResults<Image> results = mRealm.where(Image.class).notEqualTo("width",0).findAll();
+        RealmResults<Image> results = mRealm.where(Image.class).findAll();
         mAllBenefitImage.addAll(results);
         mBenefitAdapter.replaceWith(mAllBenefitImage);
     }
@@ -190,11 +205,18 @@ public class BenefitFragment extends BaseLoadingFragment implements SwipeRefresh
         loadData(1);
     }
 
+    private void doImproveJob() {
+
+        Intent intent = new Intent(getActivity(), ImageImproveService.class);
+        intent.setAction(ImageImproveService.ACTION_IMPROVE_IMAGE);
+        getActivity().startService(intent);
+    }
+
     private void loadData(int startPage){
         GankCloudApi.getInstance()
                 .getGankImages(GankCloudApi.LOAD_LIMIT, startPage)
                 .cache()
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<GoodsResult>() {
                     @Override
@@ -209,9 +231,18 @@ public class BenefitFragment extends BaseLoadingFragment implements SwipeRefresh
 
                     @Override
                     public void onNext(GoodsResult result) {
-
+                        doImproveJob();
                     }
                 });
+    }
+
+    private class UpdateResultReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int count = intent.getIntExtra(ImageImproveService.EXTRA_CHANGE, 0);
+            if(count > 0)
+                refreshBenefitGoods();
+        }
     }
 
 }
